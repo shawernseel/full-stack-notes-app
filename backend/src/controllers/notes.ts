@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import NoteModel from "../models/note";
 import createHttpError from "http-errors";
+import mongoose from "mongoose";
 
 //Request Handler: (typescript type) a function excecuted every time the server reveives a particular request
 export const getNotes: RequestHandler = async (req, res, next) => { //an endpoint for a http get request //typescript figures out types
@@ -16,11 +17,23 @@ export const getNotes: RequestHandler = async (req, res, next) => { //an endpoin
     }
 };
 
+// at this point there is some requested value for objectId
 export const getNote: RequestHandler = async (req, res, next) => {
     const noteId = req.params.noteId;
 
     try {
+        //misshaped noteId in getNote error handler
+        if (!mongoose.isValidObjectId(noteId)) {
+            throw createHttpError(400, "Invalid note id");
+        }
+
         const note = await NoteModel.findById(noteId).exec(); //findById mongoose
+
+        //invalid noteId error handler
+        if (!note) {
+            throw createHttpError(404, "Note not found");
+        }
+
         res.status(200).json(note);
     } catch (error) {
         next(error);
