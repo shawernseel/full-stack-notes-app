@@ -4,6 +4,7 @@ import express, { NextFunction, Request, Response } from "express";
 // == const express = require("express");
 import notesRoutes from "./routes/notes";
 import morgan from "morgan";
+import createHttpError, { isHttpError } from "http-errors";
 
 const app = express(); //app is our server
 
@@ -14,7 +15,7 @@ app.use(express.json()); //sets up express so we can sent json to server
 app.use("/api/notes", notesRoutes);
 
 app.use((req, res, next) => { //types figured out automatically
-    next(Error("Endopoint not found"));
+    next(createHttpError(404, "Endopoint not found")); //uses http-errors package
 });
 
 //express recognizes this as error handler //types script does not infer type
@@ -22,8 +23,12 @@ app.use((req, res, next) => { //types figured out automatically
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => { 
     console.error(error);
     let errorMessage = "An unknown error occurred";
-    if (error instanceof Error) errorMessage = error.message;
-    res.status(500).json({ error: errorMessage }); //500 internal server error
+    let statusCode = 500; //500 internal server error
+    if (isHttpError(error)) {
+        statusCode = error.status;
+        errorMessage = error.message;
+    }
+    res.status(statusCode).json({ error: errorMessage });
 });
 
 export default app; //default: export one single thing
