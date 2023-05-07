@@ -1,7 +1,8 @@
 import { cleanEnv } from "envalid"; //{} because there are multiple things
 import { port, str } from "envalid/dist/validators"; 
 
-export default cleanEnv(process.env, { //makes sure things are not undefined
+//makes sure these things are not undefined
+export default cleanEnv(process.env, {
     MONGO_CONNECTION_STRING: str(), //defines string as type str
     PORT: port(),
 });

@@ -1,5 +1,5 @@
 import express from "express";
-import * as NotesController from "../controllers/notes";
+import * as NotesController from "../controllers/notes"; //access all module exports in a single variable
 
 const router = express.Router(); //sets endpoints on router
 

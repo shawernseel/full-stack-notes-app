@@ -13,3 +13,6 @@
 // button?.addEventListener("click", () => {
 //     button?.classList.toggle("altColor");   
 // });
+
+// MONGOOSE:
+// .exec - returns a better stack trace
