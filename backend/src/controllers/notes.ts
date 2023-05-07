@@ -116,3 +116,28 @@ export const updateNote: RequestHandler<UpdateNoteParams, unknown, UpdateNoteBod
     }
 };
 
+export const deleteNote: RequestHandler = async(req, res, next) => {
+    const noteId = req.params.noteId;
+
+    try {
+        if (!mongoose.isValidObjectId(noteId)) {
+            throw createHttpError(400, "Invalid note id");
+        }
+
+        const note = await NoteModel.findById(noteId).exec();
+
+        if (!note) {
+            throw createHttpError(404, "Note not found");
+        }
+
+        await note.deleteOne(); 
+        //alternative NoteModel.findByIdAnd(Remove or smth like that)
+
+        res.sendStatus(204); //204: deletion successful // since no .json, have to add SENDstatus
+
+
+
+    } catch (error) {
+        next(error);
+    }
+};
