@@ -16,3 +16,5 @@
 
 // MONGOOSE:
 // .exec - returns a better stack trace
+
+// npx create-react-app frontend --template typescript
