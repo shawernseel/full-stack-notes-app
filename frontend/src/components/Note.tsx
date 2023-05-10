@@ -8,12 +8,13 @@ import { MdDelete } from "react-icons/md";
 //we need this for typescript
 interface NoteProps {
     note: NoteModel,
+    onNoteClicked: (note: NoteModel) => void, //callback forwards note to caller
     onDeleteNoteClicked: (note: NoteModel) => void, //callback func
     className?: string,
 }
 
 //when an argument changes, react updates compononent -acts like a usestate
-const Note = ({ note, onDeleteNoteClicked, className }: NoteProps) => { //destructuring
+const Note = ({ note, onNoteClicked, onDeleteNoteClicked, className }: NoteProps) => { //destructuring
     const {
         title,
         text,
@@ -30,7 +31,10 @@ const Note = ({ note, onDeleteNoteClicked, className }: NoteProps) => { //destru
 
     //return ui drawn on screen
     return (
-        <Card className={`${styles.noteCard} ${className}`}> {/* backtick var as string */}
+        <Card
+            className={`${styles.noteCard} ${className}`/* backtick var as string */}
+            onClick={() => onNoteClicked(note)}
+        >
             <Card.Body className={styles.cardBody}>
                 <Card.Title className={styleUtils.flexCenter}>
                     {title /*note.title*/}

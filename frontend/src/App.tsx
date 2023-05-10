@@ -6,7 +6,7 @@ import Note from './components/Note';
 import styles from "./styles/NotesPage.module.css";
 import styleUtils from "./styles/utils.module.css";
 import * as NotesApi from "./network/notes_api"; //hides functs
-import AddNoteDialog from './components/AddNoteDialog';
+import AddEditNoteDialog from './components/AddEditNoteDialog';
 import { FaPlus } from "react-icons/fa";
 
 function App() {
@@ -16,6 +16,7 @@ function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]); //have to tell typescript type that it will be// [] init with empty array
 
   const [showAddNoteDialog, setShowAddNoteDialog] = useState(false);
+  const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
 
   //excecute side effects that don't update everytime
   useEffect(() => { //cannot be async so we put async in wrapper funct
@@ -39,7 +40,7 @@ function App() {
       setNotes(notes.filter(existingNote => existingNote._id !== note._id));
     } catch (error) {
       console.error(error);
-      alert(error);      
+      alert(error);
     }
   }
 
@@ -59,18 +60,29 @@ function App() {
             <Note
               note={note}
               className={styles.note}
+              onNoteClicked={setNoteToEdit} //equivalent to (note) => setNoteToEdit(note)
               onDeleteNoteClicked={deleteNote} //deleteNote is a callback func
-              />
+            />
           </Col>
         ))}
       </Row>
       {showAddNoteDialog && //conditional, will only draw if showAddNoteDialog is True
         //^ could have passed as property and it persists after we close dialog, but we want to clear dialog on close
-        <AddNoteDialog
+        <AddEditNoteDialog
           onDismiss={() => setShowAddNoteDialog(false)}
           onNoteSaved={(newNote) => {
             setNotes([...notes, newNote]); //adds existing + new //is a usestate so rerender newNote
             setShowAddNoteDialog(false);
+          }}
+        />
+      }
+      {noteToEdit &&
+        <AddEditNoteDialog
+          noteToEdit={noteToEdit}
+          onDismiss={() => setNoteToEdit(null)}
+          onNoteSaved={(updatedNote) => {
+            setNotes(notes.map(existingNote => existingNote._id === updatedNote._id ? updatedNote : existingNote));
+            setNoteToEdit(null);
           }}
         />
       }
