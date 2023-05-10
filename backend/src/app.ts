@@ -2,6 +2,7 @@
 import "dotenv/config"; //this is a shorthand for import
 import express, { NextFunction, Request, Response } from "express";
 // == const express = require("express");
+import userRoutes from "./routes/users";
 import notesRoutes from "./routes/notes";
 import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
@@ -12,6 +13,7 @@ app.use(morgan("dev")); //logs endpoints accessed
 
 app.use(express.json()); //sets up express so we can sent json to server
 
+app.use("/api/notes", userRoutes);
 app.use("/api/notes", notesRoutes);
 
 app.use((req, res, next) => { //types figured out automatically
