@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import { Note as NoteModel } from './models/note';
 import Note from './components/Note';
 import styles from "./styles/NotesPage.module.css";
+import styleUtils from "./styles/utils.module.css";
 import * as NotesApi from "./network/notes_api"; //hides functs
 import AddNoteDialog from './components/AddNoteDialog';
 
@@ -34,7 +35,9 @@ function App() {
 
   return (
     <Container> {/* bootstrap adds padding */}
-      <Button onClick={() => setShowAddNoteDialog(true)}>
+      <Button 
+      className={`mb-4 ${styleUtils.blockCenter}`}
+      onClick={() => setShowAddNoteDialog(true)}>
         Add new note
       </Button>
       <Row xs={1} md={2} xl={3} className="g-4"> {/* g-4 predfined room */}
@@ -50,6 +53,10 @@ function App() {
         //^ could have passed as property and it persists after we close dialog, but we want to clear dialog on close
         <AddNoteDialog 
           onDismiss={() => setShowAddNoteDialog(false)}
+          onNoteSaved={(newNote) => {
+            setNotes([...notes, newNote]); //adds existing + new //is a usestate so rerender newNote
+            setShowAddNoteDialog(false);
+          }}
         />
       }
     </Container>
