@@ -7,6 +7,7 @@ import styles from "./styles/NotesPage.module.css";
 import styleUtils from "./styles/utils.module.css";
 import * as NotesApi from "./network/notes_api"; //hides functs
 import AddNoteDialog from './components/AddNoteDialog';
+import { FaPlus } from "react-icons/fa";
 
 function App() {
   // [currState, funct to update val]
@@ -45,8 +46,9 @@ function App() {
   return (
     <Container> {/* bootstrap adds padding */}
       <Button
-        className={`mb-4 ${styleUtils.blockCenter}`}
+        className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`}
         onClick={() => setShowAddNoteDialog(true)}>
+        <FaPlus />
         Add new note
       </Button>
       <Row xs={1} md={2} xl={3} className="g-4"> {/* g-4 predfined room */}
@@ -57,7 +59,7 @@ function App() {
             <Note
               note={note}
               className={styles.note}
-              onDeleteNoteClicked={deleteNote}
+              onDeleteNoteClicked={deleteNote} //deleteNote is a callback func
               />
           </Col>
         ))}
