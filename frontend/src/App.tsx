@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 //import logo from './logo.svg';
-import { Button, Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { Note as NoteModel } from './models/note';
 import Note from './components/Note';
 import styles from "./styles/NotesPage.module.css";
@@ -14,6 +14,8 @@ function App() {
   // use state returns array with these vals that we destruct to state and updatestate
   //const [clickCount, setClickCount] = useState(0); //typescript inferse type is number from init
   const [notes, setNotes] = useState<NoteModel[]>([]); //have to tell typescript type that it will be// [] init with empty array
+  const [notesLoading, setNotesLoading] = useState(true);
+  const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
 
   const [showAddNoteDialog, setShowAddNoteDialog] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
@@ -22,13 +24,18 @@ function App() {
   useEffect(() => { //cannot be async so we put async in wrapper funct
     async function loadNotes() {
       try {
+        setShowNotesLoadingError(false);
+        setNotesLoading(true);
         //const response = await fetch("/api/notes", { method: "GET" }); //GET request
         //const notes = await response.json(); //json since backend sends a json
         const notes = await NotesApi.fetchNotes();
         setNotes(notes);
       } catch (error) {
         console.error(error);
-        alert(error);
+        //alert(error);
+        setShowNotesLoadingError(true);
+      } finally { //does for both cases error or no error
+        setNotesLoading(false);
       }
     }
     loadNotes();
@@ -43,29 +50,42 @@ function App() {
       alert(error);
     }
   }
-
+  const notesGrid =
+    <Row xs={1} md={2} xl={3} className={`g-4 ${styles.noteGrid}`}> {/* g-4 predfined room */}
+      {/* {JSON.stringify(notes) */}
+      {notes.map(note => ( //for eac note object in array
+        //we get note from note //we need a key for react
+        <Col key={note._id}>
+          <Note
+            note={note}
+            className={styles.note}
+            onNoteClicked={setNoteToEdit} //equivalent to (note) => setNoteToEdit(note)
+            onDeleteNoteClicked={deleteNote} //deleteNote is a callback func
+          />
+        </Col>
+      ))}
+    </Row>
   return (
-    <Container> {/* bootstrap adds padding */}
+    <Container className={styles.notesPage}> {/* bootstrap adds padding */}
       <Button
         className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`}
         onClick={() => setShowAddNoteDialog(true)}>
         <FaPlus />
         Add new note
       </Button>
-      <Row xs={1} md={2} xl={3} className="g-4"> {/* g-4 predfined room */}
-        {/* {JSON.stringify(notes) */}
-        {notes.map(note => ( //for eac note object in array
-          //we get note from note //we need a key for react
-          <Col key={note._id}>
-            <Note
-              note={note}
-              className={styles.note}
-              onNoteClicked={setNoteToEdit} //equivalent to (note) => setNoteToEdit(note)
-              onDeleteNoteClicked={deleteNote} //deleteNote is a callback func
-            />
-          </Col>
-        ))}
-      </Row>
+      {notesLoading && <Spinner animation='border' variant='primary' /> /* if notesLoading... */}
+      {showNotesLoadingError && <p>Something went wrong. Please refresh page</p>}
+      {!notesLoading && !showNotesLoadingError &&
+        <>
+          {notes.length > 0/* have to use fragment for {{}} */
+            ? notesGrid
+            : <p>You don't have any notes yet</p>
+          }
+        </>
+      }
+
+
+
       {showAddNoteDialog && //conditional, will only draw if showAddNoteDialog is True
         //^ could have passed as property and it persists after we close dialog, but we want to clear dialog on close
         <AddEditNoteDialog
