@@ -6,6 +6,9 @@ import userRoutes from "./routes/users";
 import notesRoutes from "./routes/notes";
 import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
+import session from "express-session";
+import env from "./util/validateEnv";
+import MongoStore from "connect-mongo";
 
 const app = express(); //app is our server
 
@@ -13,7 +16,20 @@ app.use(morgan("dev")); //logs endpoints accessed
 
 app.use(express.json()); //sets up express so we can sent json to server
 
-app.use("/api/notes", userRoutes);
+app.use(session({
+    secret: env.SESSION_SECRET, //assign cookie key to user
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 60 * 60 * 1000, //1 hour
+    },
+    rolling: true, //revalidates when using
+    store: MongoStore.create({
+        mongoUrl: env.MONGO_CONNECTION_STRING
+    }),
+}));
+
+app.use("/api/users", userRoutes);
 app.use("/api/notes", notesRoutes);
 
 app.use((req, res, next) => { //types figured out automatically
