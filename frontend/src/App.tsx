@@ -32,12 +32,21 @@ function App() {
     loadNotes();
   }, []);//, [] makes it so that it only runs on initial render: -2nd arg monitors val so that change in val = update
 
+  async function deleteNote(note: NoteModel) {
+    try {
+      await NotesApi.deleteNote(note._id);
+      setNotes(notes.filter(existingNote => existingNote._id !== note._id));
+    } catch (error) {
+      console.error(error);
+      alert(error);      
+    }
+  }
 
   return (
     <Container> {/* bootstrap adds padding */}
-      <Button 
-      className={`mb-4 ${styleUtils.blockCenter}`}
-      onClick={() => setShowAddNoteDialog(true)}>
+      <Button
+        className={`mb-4 ${styleUtils.blockCenter}`}
+        onClick={() => setShowAddNoteDialog(true)}>
         Add new note
       </Button>
       <Row xs={1} md={2} xl={3} className="g-4"> {/* g-4 predfined room */}
@@ -45,13 +54,17 @@ function App() {
         {notes.map(note => ( //for eac note object in array
           //we get note from note //we need a key for react
           <Col key={note._id}>
-            <Note note={note} className={styles.note} />
+            <Note
+              note={note}
+              className={styles.note}
+              onDeleteNoteClicked={deleteNote}
+              />
           </Col>
         ))}
       </Row>
       {showAddNoteDialog && //conditional, will only draw if showAddNoteDialog is True
         //^ could have passed as property and it persists after we close dialog, but we want to clear dialog on close
-        <AddNoteDialog 
+        <AddNoteDialog
           onDismiss={() => setShowAddNoteDialog(false)}
           onNoteSaved={(newNote) => {
             setNotes([...notes, newNote]); //adds existing + new //is a usestate so rerender newNote
