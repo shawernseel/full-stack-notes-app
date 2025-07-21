@@ -10,6 +10,7 @@ import AddEditNoteDialog from './components/AddEditNoteDialog';
 import { FaPlus } from "react-icons/fa";
 import SignUpModel from './components/SignUpModal';
 import LoginModal from './components/LoginModal';
+import NavBar from './components/NavBar';
 
 function App() {
   // [currState, funct to update val]
@@ -68,60 +69,69 @@ function App() {
       ))}
     </Row>
   return (
-    <Container className={styles.notesPage}> {/* bootstrap adds padding */}
-      <Button
-        className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`}
-        onClick={() => setShowAddNoteDialog(true)}>
-        <FaPlus />
-        Add new note
-      </Button>
-      {notesLoading && <Spinner animation='border' variant='primary' /> /* if notesLoading... */}
-      {showNotesLoadingError && <p>Something went wrong. Please refresh page</p>}
-      {!notesLoading && !showNotesLoadingError &&
-        <>
-          {notes.length > 0/* have to use fragment for {{}} */
-            ? notesGrid
-            : <p>You don't have any notes yet</p>
-          }
-        </>
-      }
+    <div>
+      <NavBar
+        loggedInUser={null}
+        onLoginClicked={() => { }}
+        onSignUpClicked={() => { }}
+        onLogoutSuccessful={() => { }}
+      />
+      <Container className={styles.notesPage}> {/* bootstrap adds padding */}
+        <Button
+          className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`}
+          onClick={() => setShowAddNoteDialog(true)}>
+          <FaPlus />
+          Add new note
+        </Button>
+        {notesLoading && <Spinner animation='border' variant='primary' /> /* if notesLoading... */}
+        {showNotesLoadingError && <p>Something went wrong. Please refresh page</p>}
+        {!notesLoading && !showNotesLoadingError &&
+          <>
+            {notes.length > 0/* have to use fragment for {{}} */
+              ? notesGrid
+              : <p>You don't have any notes yet</p>
+            }
+          </>
+        }
 
-
-
-      {showAddNoteDialog && //conditional, will only draw if showAddNoteDialog is True
-        //^ could have passed as property and it persists after we close dialog, but we want to clear dialog on close
-        <AddEditNoteDialog
-          onDismiss={() => setShowAddNoteDialog(false)}
-          onNoteSaved={(newNote) => {
-            setNotes([...notes, newNote]); //adds existing + new //is a usestate so rerender newNote
-            setShowAddNoteDialog(false);
-          }}
-        />
-      }
-      {noteToEdit &&
-        <AddEditNoteDialog
-          noteToEdit={noteToEdit}
-          onDismiss={() => setNoteToEdit(null)}
-          onNoteSaved={(updatedNote) => {
-            setNotes(notes.map(existingNote => existingNote._id === updatedNote._id ? updatedNote : existingNote));
-            setNoteToEdit(null);
-          }}
-        />
-      }
-      {
-        true &&
-        <SignUpModel
-          onDismiss={() => { }}
-          onSignUpSuccessful={() => { }}
-        />
-      }
-      {true &&
-        <LoginModal
-          onDismiss={() => { }}
-          onLoginUpSuccessful={() => { }}
-        />
-      }
-    </Container>
+        {
+          showAddNoteDialog && //conditional, will only draw if showAddNoteDialog is True
+          //^ could have passed as property and it persists after we close dialog, but we want to clear dialog on close
+          <AddEditNoteDialog
+            onDismiss={() => setShowAddNoteDialog(false)}
+            onNoteSaved={(newNote) => {
+              setNotes([...notes, newNote]); //adds existing + new //is a usestate so rerender newNote
+              setShowAddNoteDialog(false);
+            }}
+          />
+        }
+        {
+          noteToEdit &&
+          <AddEditNoteDialog
+            noteToEdit={noteToEdit}
+            onDismiss={() => setNoteToEdit(null)}
+            onNoteSaved={(updatedNote) => {
+              setNotes(notes.map(existingNote => existingNote._id === updatedNote._id ? updatedNote : existingNote));
+              setNoteToEdit(null);
+            }}
+          />
+        }
+        {
+          true &&
+          <SignUpModel
+            onDismiss={() => { }}
+            onSignUpSuccessful={() => { }}
+          />
+        }
+        {
+          true &&
+          <LoginModal
+            onDismiss={() => { }}
+            onLoginSuccessful={() => { }}
+          />
+        }
+      </Container >
+    </div>
   );
 }
 

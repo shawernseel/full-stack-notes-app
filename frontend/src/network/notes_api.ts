@@ -1,5 +1,5 @@
 import { Note } from "../models/note";
-import { User } from "../models/users";
+import { User } from "../models/user";
 
 //same data accepted as fetch
 async function fetchData(input: RequestInfo, init?: RequestInit) {

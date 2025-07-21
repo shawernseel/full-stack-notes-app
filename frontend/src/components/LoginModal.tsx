@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { User } from "../models/users";
+import { User } from "../models/user";
 import { LoginCredentials } from "../network/notes_api";
 import * as NotesApi from "../network/notes_api";
 import { Button, Form, Modal } from "react-bootstrap";
