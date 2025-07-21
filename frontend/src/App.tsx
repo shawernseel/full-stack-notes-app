@@ -8,6 +8,7 @@ import styleUtils from "./styles/utils.module.css";
 import * as NotesApi from "./network/notes_api"; //hides functs
 import AddEditNoteDialog from './components/AddEditNoteDialog';
 import { FaPlus } from "react-icons/fa";
+import SignUpModel from './components/SignUpModal';
 
 function App() {
   // [currState, funct to update val]
@@ -104,6 +105,13 @@ function App() {
             setNotes(notes.map(existingNote => existingNote._id === updatedNote._id ? updatedNote : existingNote));
             setNoteToEdit(null);
           }}
+        />
+      }
+      {
+        true &&
+        <SignUpModel
+          onDismiss={() => { }}
+          onSingUpSuccessful={() => { }}
         />
       }
     </Container>
