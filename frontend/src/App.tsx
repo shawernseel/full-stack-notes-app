@@ -9,6 +9,7 @@ import * as NotesApi from "./network/notes_api"; //hides functs
 import AddEditNoteDialog from './components/AddEditNoteDialog';
 import { FaPlus } from "react-icons/fa";
 import SignUpModel from './components/SignUpModal';
+import LoginModal from './components/LoginModal';
 
 function App() {
   // [currState, funct to update val]
@@ -111,7 +112,13 @@ function App() {
         true &&
         <SignUpModel
           onDismiss={() => { }}
-          onSingUpSuccessful={() => { }}
+          onSignUpSuccessful={() => { }}
+        />
+      }
+      {true &&
+        <LoginModal
+          onDismiss={() => { }}
+          onLoginUpSuccessful={() => { }}
         />
       }
     </Container>
