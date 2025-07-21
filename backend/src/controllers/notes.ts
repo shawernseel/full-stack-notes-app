@@ -44,7 +44,7 @@ export const getNote: RequestHandler = async (req, res, next) => {
 interface CreateNoteBody { //interface similar to type but more flexible
     title?: string,
     text?: string, //text may be undefined
-};
+}
 
 //unknown leaves param (there are 4 of them) as untouched (hover to see types)
 export const createNote: RequestHandler<unknown, unknown, CreateNoteBody, unknown> = async (req, res, next) => {

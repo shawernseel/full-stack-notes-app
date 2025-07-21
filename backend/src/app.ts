@@ -14,7 +14,7 @@ const app = express(); //app is our server
 
 app.use(morgan("dev")); //logs endpoints accessed
 
-app.use(express.json()); //sets up express so we can sent json to server
+app.use(express.json()); //sets up express so we can send json to server
 
 app.use(session({
     secret: env.SESSION_SECRET, //assign cookie key to user
