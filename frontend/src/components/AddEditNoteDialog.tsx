@@ -55,34 +55,14 @@ const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved }: AddEditNoteDi
                         error={errors.title}
                     />
 
-
-
-                    <Form.Group className="mb-3">
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Title" //adds text title in field
-                            isInvalid={!!errors.title /* changes to bool */}
-                            {...register("title", { required: "Required" })
-                            /* destructs register into its single peices */
-                            /* syntax for Required text field with no pop up */}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errors.title?.message}
-                        </Form.Control.Feedback>
-
-                    </Form.Group>
-
-                    <Form.Group className="mb-3">
-                        <Form.Label>Text</Form.Label>
-                        <Form.Control
-                            as="textarea"
-                            rows={5}
-                            placeholder="Text"
-                            {...register("text")}
-                        />
-                    </Form.Group>
-
+                    <TextInputField
+                        name="text"
+                        label="Text"
+                        as="textarea"
+                        rows={5}
+                        placeholder="Text"
+                        register={register}
+                    />
                 </Form>
             </Modal.Body>
 
