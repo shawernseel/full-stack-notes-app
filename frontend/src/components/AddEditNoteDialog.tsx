@@ -3,6 +3,7 @@ import { Note } from "../models/note";
 import { useForm } from "react-hook-form";
 import { NoteInput } from "../network/notes_api";
 import * as NotesApi from "../network/notes_api";
+import TextInputField from "./form/TextInputField";
 
 interface AddEditNoteDialogProps {
     noteToEdit?: Note,
@@ -12,7 +13,7 @@ interface AddEditNoteDialogProps {
 
 const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved }: AddEditNoteDialogProps) => {
     //destructure, destructure again to get callbacks
-    const { register, handleSubmit, formState : { errors, isSubmitting } } = useForm<NoteInput>({ //pass configuration
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<NoteInput>({ //pass configuration
         defaultValues: {
             title: noteToEdit?.title || "", //field is blank if no noteToEdit
             text: noteToEdit?.text || "",
@@ -44,13 +45,25 @@ const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved }: AddEditNoteDi
 
             <Modal.Body>
                 <Form id="addEditNoteForm" onSubmit={handleSubmit(onSubmit) /*called at init */}>
+                    <TextInputField
+                        name="title"
+                        label="Title"
+                        type="text"
+                        placeholder="Title"
+                        register={register}
+                        registerOptions={{ required: "Required" }}
+                        error={errors.title}
+                    />
+
+
+
                     <Form.Group className="mb-3">
                         <Form.Label>Title</Form.Label>
                         <Form.Control
                             type="text"
                             placeholder="Title" //adds text title in field
                             isInvalid={!!errors.title /* changes to bool */}
-                            {...register("title", { required: "Required" }) 
+                            {...register("title", { required: "Required" })
                             /* destructs register into its single peices */
                             /* syntax for Required text field with no pop up */}
                         />
@@ -75,9 +88,9 @@ const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved }: AddEditNoteDi
 
             <Modal.Footer>
                 <Button
-                type="submit" //when clicked close
-                form="addEditNoteForm"
-                disabled={isSubmitting}
+                    type="submit" //when clicked close
+                    form="addEditNoteForm"
+                    disabled={isSubmitting}
                 >
                     Save
                 </Button>
